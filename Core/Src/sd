@@ -1,0 +1,24 @@
+void sd() {
+	fres = f_mount(&FatFs, "", 1);    //1=mount now
+	if (fres != FR_OK)
+	{
+		printf("No SD Card found : (%i)\r\n", fres);
+		}
+	printf("SD Card Mounted Successfully!!! data coming in!!!\r\n");
+	fres = f_open(&fil, "data.txt", FA_WRITE | FA_READ | FA_CREATE_ALWAYS);
+	if(fres != FR_OK)
+	{
+		printf("File creation/open Error : (%i)\r\n", fres);
+	}
+	//write the data
+	printf("Writing data!!!\r\n");
+	UINT bytesWritten;
+	f_write(&fil, data, strlen(data), &bytesWritten);
+	f_puts("Confirmation SD card open successfully", &fil);
+	//close your file
+	f_close(&fil);
+	printf("Closing File!!!\r\n");
+	/* unmount SD card*/
+	f_mount(NULL, "", 0);
+	printf("SD Card Unmounted Successfully!!!\r\n");
+}

@@ -1,0 +1,47 @@
+  while (1){
+  	  /* USER CODE END WHILE */
+  /* motor insert */
+  	  Start_button_state = HAL_GPIO_ReadPin(SWpin_GPIO_Port, SWpin_Pin);
+  	  if(Start_button_state == GPIO_PIN_RESET){
+  		  tare_all(&loadcell, 10);
+  		  delay2_ms(1000);
+  /* to indicate that it is tared */
+  		  for(int u =0;u <= 5;u++ ){
+  			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+  			  delay2_ms(500);
+  			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+  			  delay2_ms(500);
+  	       	  }
+  		  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+  		  delay4_ms(10000);
+  		  f_open(&fil, "Thrust.txt", FA_WRITE | FA_READ | FA_CREATE_ALWAYS);
+  /* count down function called and set the timer*/
+  		  SI_func();
+  		  __HAL_TIM_SET_COUNTER(&htim4, 0);
+  /* Read data from the load cell at T-0 and send to USART and SD card*/
+  		  while(__HAL_TIM_GET_COUNTER(&htim4) < 10000){
+  		  		  Thrust = get_weight(&loadcell, 10, CHANNEL_A);
+  		  		  snprintf(data, sizeof(data), "%.3f", Thrust);
+  		  		  printf("Thrust = %.3f\n", Thrust);
+  		  		  UINT bytesWritten;
+  		  		  f_write(&fil, data, strlen(data), &bytesWritten);
+  /* ignition */
+  		  		  //HAL_GPIO_WritePin(ignition_GPIO_Port, ignition_Pin, GPIO_PIN_SET);// high level
+  		  		  //delay2_ms(2000);
+  		  		  //HAL_GPIO_WritePin(ignition_GPIO_Port, ignition_Pin, GPIO_PIN_RESET);// low level
+  		  		  //delay2_ms(8000);
+  		  	  }
+
+  /* data stop writing */
+  		  f_close(&fil);
+  		  delay2_ms(5000);
+  /* sequence terminated */
+  		  HAL_GPIO_WritePin(Buzzer_GPIO_Port, Buzzer_Pin, GPIO_PIN_SET);// high level
+  		  delay2_ms(500);
+  		  HAL_GPIO_WritePin(Buzzer_GPIO_Port, Buzzer_Pin, GPIO_PIN_RESET);// low level
+  	  }else{
+  		  Thrust = get_weight(&loadcell, 10, CHANNEL_A);
+  		  printf("Thrust = %.3f\n", Thrust);
+  	  }
+      /* USER CODE BEGIN 3 */
+        }
