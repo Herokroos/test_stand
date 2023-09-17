@@ -13,4 +13,4 @@ main.c:395:13:MX_USART2_UART_Init	2
 main.c:428:13:MX_GPIO_Init	1
 main.c:467:5:__io_putchar	1
 main.c:471:6:process_SD_card	4
-main.c:551:6:Error_Handler	1
+main.c:543:6:Error_Handler	1

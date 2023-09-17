@@ -190,13 +190,13 @@ int main(void)
   		  delay4_ms(5000);
   /* SD card */
   		  f_mount(&FatFs, "", 1);
-  		  f_open(&fil, "Thrust.txt", FA_WRITE | FA_READ | FA_CREATE_ALWAYS);
+  		  f_open(&fil, "test.txt", FA_WRITE | FA_READ | FA_CREATE_ALWAYS);
   /* count down function called and set the timer*/
-  		  HAL_TIM_Base_Start(&htim4);
-  		  __HAL_TIM_SET_COUNTER(&htim4, 0);
   		  SI_func();
   		  delay2_ms(1000);
   		  ignition();
+  		  HAL_TIM_Base_Start(&htim4);
+  		  __HAL_TIM_SET_COUNTER(&htim4, 0);
   /* Read data from the load cell at T-0 and send to USART and SD card*/
   		  while(__HAL_TIM_GET_COUNTER(&htim4) < 10000){
   		  		  Thrust = get_weight(&loadcell, 1, CHANNEL_A);
@@ -205,7 +205,7 @@ int main(void)
   		  		  UINT bytesWritten;
   		  		  f_write(&fil, data, strlen(data), &bytesWritten);
   		  }
-  		HAL_TIM_Base_Stop(&htim4);
+  		  HAL_TIM_Base_Stop(&htim4);
   /* data stop writing */
   		  f_close(&fil);
   		  f_mount(NULL, "", 0);
@@ -528,14 +528,6 @@ void process_SD_card( void )
     //close your file
     f_close(&fil);
     printf("Closing File!!!\r\n");
-#if 0
-    //Delete the file.
-    fres = f_unlink(test.txt);
-    if (fres != FR_OK)
-    {
-      printf("Cannot able to delete the file\n");
-    }
-#endif
   } while( false );
 
   //We're done, so de-mount the drive
